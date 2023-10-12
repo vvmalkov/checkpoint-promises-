@@ -1,13 +1,18 @@
 const fs = require('fs/promises');
 const {
-  compareFileOperations,
   getJokes,
   processFiles,
+  totalFromFile,
 } = require('../index');
 
 describe('getJokes', () => {
-  it('Возвращает массив из 5 шуток c https://api.chucknorris.io/jokes/random', async () => {
-    const jokes = await getJokes(5);
+  it('Использует функцию generateJoke', async () => {
+    const jetJokesString = getJokes.toString();
+    expect(jetJokesString).toMatch(/generateJoke\(/);
+  });
+  it('Возвращает массив из 5 шуток', async () => {
+    const jokes = await getJokes();
+    console.log(jokes);
     expect(Array.isArray(jokes)).toBe(true);
     expect(jokes.length).toBe(5);
     jokes.forEach((joke) => {
@@ -16,12 +21,14 @@ describe('getJokes', () => {
   });
 });
 
-describe('compareFileOperations', () => {
-  it('Возвращает операцию, которая выполнилась быстрее', async () => {
-    const result1 = await compareFileOperations('./spec/data/test-1.txt', '');
-    expect(result1).toBe('Запись быстрее');
-    const result2 = await compareFileOperations('./spec/data/test-1.txt', '.');
-    expect(result2).toBe('Чтение быстрее');
+describe('totalFromFile', () => {
+  it('Находит сумму чисел в файле input-1.txt', async () => {
+    const result = await totalFromFile('./spec/data/input-1.txt');
+    expect(result).toBe(15);
+  });
+  it('Находит сумму чисел в файле input-2.txt', async () => {
+    const result = await totalFromFile('./spec/data/input-2.txt');
+    expect(result).toBe(40);
   });
 });
 
@@ -29,12 +36,12 @@ describe('processFiles', () => {
   beforeEach(async () => {
     await processFiles();
   });
-  it('Записывает в 3 файла суммы чисел', async () => {
-    const data1 = await fs.readFile('./output-1.txt', 'utf-8');
-    const data2 = await fs.readFile('./output-2.txt', 'utf-8');
-    const data3 = await fs.readFile('./output-3.txt', 'utf-8');
-    expect(data1).toBe('Сумма чисел в input-1.txt: 15');
-    expect(data2).toBe('Сумма чисел в input-2.txt: 40');
-    expect(data3).toBe('Сумма чисел в input-3.txt: 65');
+  it('суммирует числа из файлов в папке data и записывает результат в файл output.txt', async () => {
+    const data = await fs.readFile('output.txt', 'utf-8');
+    expect(data).toBe('120');
+  });
+  it('использует функцию totalFromFile', async () => {
+    const processFilesString = processFiles.toString();
+    expect(processFilesString).toMatch(/totalFromFile\(/);
   });
 });
